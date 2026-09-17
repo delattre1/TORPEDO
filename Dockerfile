@@ -1,6 +1,6 @@
 # Current immutable Plow Hermes base. The tag names the source commit and the
 # digest prevents registry-side substitution.
-FROM public.ecr.aws/e1h7x4a2/plow-cloud-agents:base-8710797b6409c77df560c6198407765d138ea617@sha256:b9627febe57e34ec0df373709ad91a27a7fda68093e76d519678cac1012614f9
+FROM public.ecr.aws/e1h7x4a2/plow-cloud-agents:base-51f83158a70a383f03a4d03dbd8b6ea102cf0361@sha256:253d7ed3409effa7fa59113d93b4b79bb731d8264cdaf4cd60294924d0110a2e
 
 # plow-init composes this variant persona after the protected base persona on
 # every boot. Never copy identity into the mutable Hermes home.
