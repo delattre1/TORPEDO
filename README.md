@@ -104,8 +104,8 @@ telemetry payloads. Maintainers can verify the exact pinned client independently
 
 ```bash
 curl -fsS -o /tmp/agent_index_client.py \
-  https://raw.githubusercontent.com/plow-pbc/agent-index-client/f900ff144076f0a766584b6ec4d0993600779b16/standalone/agent_index_client.py
-echo '633ad3bc24a51d6b7dcfaae319983ab174d9853a525237d99cac64878452560c  /tmp/agent_index_client.py' \
+  https://raw.githubusercontent.com/plow-pbc/agent-index-client/3f116994930cb3d1c23a485851953dd6c1eef039/standalone/agent_index_client.py
+echo 'b23e7db974b1bd00b50557b44d759df170fc6ef17b471c9cfc0cd975843b535c  /tmp/agent_index_client.py' \
   | sha256sum -c -
 python3 /tmp/agent_index_client.py --self-check
 ```
