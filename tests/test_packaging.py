@@ -17,22 +17,11 @@ class TestPackaging(unittest.TestCase):
         self.assertIn("MIT License", license_text)
         self.assertIn("Permission is hereby granted", license_text)
 
-    def test_agent_index_service_is_wired_after_plow_init(self):
-        self.assertEqual("longrun", (SERVICE / "type").read_text().strip())
-        self.assertTrue((SERVICE / "dependencies.d" / "plow-init").exists())
-        self.assertTrue(
-            (ROOT / "image" / "s6-overlay" / "s6-rc.d" / "user" / "contents.d" / "agent-index").exists()
-        )
-        subprocess.run(["sh", "-n", str(SERVICE / "run")], check=True)
-
-    def test_agent_index_state_is_bound_to_one_agent_id(self):
-        service = (SERVICE / "run").read_text(encoding="utf-8")
-        self.assertIn("scout-agent-id", service)
-        self.assertIn('STORED_AGENT_ID" != "$AGENT_ID', service)
-        self.assertIn("AGENT_INDEX_ADOPT_EXISTING_STATE", service)
-        self.assertIn("registered state predates the durable AGENT_ID binding", service)
-        registration = service.index("--register --agent")
-        self.assertGreater(service.index("write_agent_binding ||", registration), registration)
+    def test_usage_reporter_is_the_base_images_own(self):
+        # A same-named service here would replace the base's at COPY image/s6-overlay/.
+        self.assertFalse(SERVICE.exists())
+        self.assertFalse((ROOT / "image" / "s6-overlay" / "s6-rc.d" / "user" / "contents.d" / "agent-index").exists())
+        self.assertNotIn("client.pin", (ROOT / "Dockerfile").read_text())
 
     def test_ci_actions_are_immutable_and_container_boot_is_smoke_tested(self):
         workflow = VERIFY_WORKFLOW.read_text(encoding="utf-8")
@@ -47,13 +36,9 @@ class TestPackaging(unittest.TestCase):
         self.assertIn("unable to start service", workflow)
         self.assertIn("agent-index-client.py --self-check", workflow)
 
-    def test_client_and_base_are_immutable_and_checked(self):
-        pin = (ROOT / "vendor" / "client.pin").read_text()
-        self.assertRegex(pin, r"(?m)^sha=[0-9a-f]{40}$")
-        self.assertRegex(pin, r"(?m)^sha256=[0-9a-f]{64}$")
+    def test_base_is_immutable(self):
         dockerfile = (ROOT / "Dockerfile").read_text()
         self.assertRegex(dockerfile, r"(?m)^FROM .*:base-[0-9a-f]{40}@sha256:[0-9a-f]{64}$")
-        self.assertIn("sha256sum", dockerfile)
         self.assertNotRegex(dockerfile, r"COPY[^\n]*/var/lib/hermes/skills")
 
     def test_compose_preserves_home_and_mounts_credentials_read_only(self):

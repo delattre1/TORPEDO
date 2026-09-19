@@ -12,7 +12,6 @@ class TestDocumentation(unittest.TestCase):
         self.assertIn("docs/DEMO.md", readme)
         self.assertIn("docs/ACCEPTANCE_RECORD.md", readme)
         self.assertIn("docs/hackathon-build/checklist.md", readme)
-        self.assertIn("/tmp/agent_index_client.py", readme)
         self.assertIn("Linux (or WSL on Windows)", readme)
 
     def test_operations_covers_durability_safety_and_telemetry(self):

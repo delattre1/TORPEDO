@@ -20,7 +20,7 @@ docker compose config --quiet
 docker build --pull -t scout:local .
 ```
 
-The Docker build downloads the exact Agent Index client commit in `vendor/client.pin` and refuses a checksum mismatch.
+The Agent Index client and its `agent-index` reporter service come with the Plow base image.
 
 ## 3. Start the agent
 
@@ -33,19 +33,6 @@ docker compose logs -f agent
 ```
 
 The persistent `agent-home` volume owns `$HERMES_HOME`, including `scout/scout.db` and the official Agent Index installation identity. Rebuilding the image must not delete this volume.
-
-When upgrading a volume that already reported usage before Scout stored a
-durable agent-ID binding, adopt that existing installation exactly once:
-
-```bash
-AGENT_INDEX_ADOPT_EXISTING_STATE=1 docker compose up --build -d
-docker compose logs agent | grep agent-index
-docker compose up -d
-```
-
-Only do this after confirming `AGENT_ID` is the identifier previously used by
-that volume. The first command writes the private binding; subsequent boots
-refuse to report if a different ID is supplied.
 
 Before starting a demo, run this preflight:
 

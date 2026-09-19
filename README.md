@@ -91,24 +91,14 @@ docker compose up --build -d
 
 ## Agent Index
 
-`vendor/client.pin` fixes the official `plow-pbc/agent-index-client` standalone
-client by commit SHA and SHA-256. The Docker build verifies its bytes before
-installing it. An s6 longrun waits for `plow-init`, exchanges the agent credential
-for a durable install identity when necessary, and reports usage every five
-minutes without passing the broad Plow token to reporting runs.
+The Plow base image ships the official Agent Index client and its supervised
+`agent-index` reporter; this repo carries no copy. It waits for `plow-init`,
+registers when needed, and reports usage every five minutes.
 
 Scout is registered under the public ID `scout`. Regular installers do not
 register a new agent ID: the supervised reporter registers their persistent
 installation under `scout` on first start. Do not hand-create install IDs or
-telemetry payloads. Maintainers can verify the exact pinned client independently:
-
-```bash
-curl -fsS -o /tmp/agent_index_client.py \
-  https://raw.githubusercontent.com/plow-pbc/agent-index-client/3f116994930cb3d1c23a485851953dd6c1eef039/standalone/agent_index_client.py
-echo 'b23e7db974b1bd00b50557b44d759df170fc6ef17b471c9cfc0cd975843b535c  /tmp/agent_index_client.py' \
-  | sha256sum -c -
-python3 /tmp/agent_index_client.py --self-check
-```
+telemetry payloads.
 
 ## Runbooks and build status
 
